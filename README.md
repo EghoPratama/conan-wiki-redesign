@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Detective Conan Wiki: redesign
 
-## Getting Started
+Redesign tidak resmi dari [detectiveconanworld.com](https://www.detectiveconanworld.com).
+Data diambil langsung dari MediaWiki API milik wiki, di-parse di server, lalu ditampilkan
+dengan UI baru. Tidak ada database.
 
-First, run the development server:
+**Stack:** Next.js 16 (App Router, Turbopack, `cacheComponents: true`), React 19, Tailwind CSS v4
+(lewat `@tailwindcss/postcss`), CSS Modules, cheerio untuk parsing HTML.
+
+## Menjalankan
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # http://localhost:3000
+npm run build && npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Variabel lingkungan (opsional):
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Nama | Fungsi |
+|---|---|
+| `WIKI_API_URL` | Mengganti alamat `api.php`, berguna untuk tes dengan wiki tiruan |
+| `WIKI_DEBUG` | Mencetak log parser (infobox, thumbnail) |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+`next build` memanggil wiki saat prerender, jadi build butuh koneksi ke wiki.
 
-## Learn More
+## Halaman
 
-To learn more about Next.js, take a look at the following resources:
+| Rute | Isi |
+|---|---|
+| `/` | Beranda: episode terbaru, berita, rilis, "Did you know" |
+| `/wiki/[slug]` | Artikel apa pun: infobox, daftar isi, spoiler, galeri sidebar, previous/next |
+| `/characters`, `/characters/[name]` | Grid karakter (load more) dan detail |
+| `/anime`, `/anime/[season]` | Season dan daftar episode |
+| `/manga`, `/manga/[range]` | Rentang volume dan chapter |
+| `/movies`, `/music`, `/staff` | Film, lagu, staf dan pengisi suara |
+| `/search?q=` | Pencarian |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## API
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Semua GET dan mengembalikan JSON. Paginasi memakai `nextCursor`, kirim balik sebagai `?cursor=`.
+Error berbentuk `{ "error": "..." }` dengan status 400/404/502/504.
 
-## Deploy on Vercel
+| Endpoint | Parameter |
+|---|---|
+| `/api/home` | |
+| `/api/pages/[slug]` | Artikel generik; field `infobox`, `chronology`, `gallery`, `cases`, `html` |
+| `/api/characters` | `limit` (1-50), `cursor`, `category` |
+| `/api/characters/[name]` | |
+| `/api/search` | `q` (2-100 karakter), `limit`, `cursor` |
+| `/api/anime`, `/api/anime/[season]` | |
+| `/api/manga`, `/api/manga/[range]` | |
+| `/api/movies`, `/api/music`, `/api/staff` | |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Detail lain ada di [WIKI-API.md](./WIKI-API.md).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Struktur
+
+```
+app/          rute halaman dan /api/*; icon.svg = favicon
+components/   UI (article, home, lists, characters, search, extra)
+lib/wiki/     client, query ber-cache, parser (html, infobox, page, lists, extra, home)
+types/        tipe data yang dikembalikan API
+```
+
+Alur data: `queries.ts` (`"use cache"` + `cacheLife`) -> `client.ts` (`wikiFetch`, satu-satunya
+pintu ke wiki) -> `parse*.ts` (cheerio) -> tipe di `types/` -> halaman dan `/api/*`.
+
+## Catatan penting
+
+- **Cache:** halaman dan endpoint memakai `"use cache"`. Respons 4xx dari wiki di-cache sebagai nilai,
+  5xx dilempar supaya tidak ikut ter-cache.
+- **Pola halaman:** `params` dan `searchParams` adalah Promise. Halaman bersifat sinkron dan
+  membungkus komponen async di `<Suspense>`.
+- **Sanitasi HTML:** `normalizeHtml` (`lib/wiki/html.ts`) membuang elemen berbahaya, style inline
+  dan event handler, menulis ulang link ke rute internal, dan menyembunyikan spoiler
+  (`[data-spoiler]` plus tombol `[data-spoiler-toggle]`). Pola tata letak wiki yang bergantung pada
+  style inline (mis. baris kartu cast) dideteksi sebelum style dibuang dan diberi class.
+- **CSS Modules:** class bawaan wiki (`.people`, `.infobox-crime`, dst.) harus ditulis dengan
+  `:global(...)` di `components/article/article.module.css`.
+- **Tailwind v4:** gunakan `@tailwindcss/postcss` dengan `postcss.config.mjs`. Aturan
+  `turbopack.rules["*.css"]` dengan `@tailwindcss/turbopack` menimpa penanganan CSS Modules,
+  sehingga class modul menjadi `undefined`.
+- **Halaman tidak ditemukan** tampil "Case not found" tetapi berstatus HTTP 200 (isi di-stream
+  setelah header terkirim). Endpoint `/api/*` mengembalikan 404 sungguhan.
+- **Markup wiki berubah:** bila tampilan kosong, bandingkan HTML terbaru dengan asumsi di
+  `lib/wiki/parse*.ts` (tiap parser berkomentar soal strukturnya).
+
+## Lisensi dan atribusi
+
+Konten artikel dan gambar milik komunitas Detective Conan Wiki dan pemegang hak ciptanya.
+Detective Conan adalah karya Gosho Aoyama, diterbitkan oleh Shogakukan. Proyek ini tidak berafiliasi
+dengan pihak mana pun dan menautkan balik ke wiki sumber.

@@ -1,0 +1,29 @@
+.footer {
+  margin-top: clamp(3rem, 8vw, 6rem);
+  border-top: 1px solid var(--rule);
+}
+
+.inner {
+  display: grid;
+  gap: 1rem 3rem;
+  padding-block: 2.5rem 3.5rem;
+}
+
+.motto {
+  font-size: 2rem;
+  color: var(--blazer);
+}
+
+.note {
+  max-width: 62ch;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+@media (min-width: 800px) {
+  .inner {
+    grid-template-columns: 1fr 2fr;
+    align-items: start;
+  }
+}

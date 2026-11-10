@@ -1,0 +1,238 @@
+/* ---------- Kotak pilihan (season / rentang volume) ---------- */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 1rem;
+}
+.tile {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1.1rem 1.1rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  text-decoration: none;
+  min-height: 6.5rem;
+  align-content: end;
+}
+.tile:hover {
+  border-color: var(--blazer);
+}
+.tileTitle {
+  font-size: 2rem;
+  color: var(--blazer);
+}
+.tileMeta {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+
+/* ---------- Baris episode / volume ---------- */
+.rows {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 62rem;
+}
+.row {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  scroll-margin-top: 1rem;
+}
+.number {
+  display: grid;
+  align-content: start;
+  gap: 0.2rem;
+  font-size: 2.4rem;
+  color: var(--blazer);
+}
+.int {
+  font-family: var(--font-text);
+  font-stretch: 100%;
+  font-weight: 600;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  color: var(--ink-soft);
+  overflow-wrap: anywhere;
+}
+.main {
+  display: grid;
+  gap: 0.5rem;
+  min-width: 0;
+  align-content: start;
+}
+.rowTitle {
+  margin: 0;
+  font-size: 1.15rem;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+.rowTitle a {
+  text-decoration: none;
+}
+.rowTitle a:hover {
+  color: var(--blazer);
+  text-decoration: underline;
+}
+.badge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.05rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 650;
+  color: var(--ink-soft);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  vertical-align: middle;
+}
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+.meta a {
+  color: var(--blazer);
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.tags li {
+  padding: 0.05rem 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--blazer);
+  background: var(--paper);
+  border-radius: 999px;
+}
+
+/* ---------- Detail (native <details>, tanpa JS) ---------- */
+.details {
+  font-size: 0.95rem;
+}
+.details summary {
+  cursor: pointer;
+  font-weight: 650;
+  color: var(--blazer);
+}
+.details[open] summary {
+  margin-bottom: 0.5rem;
+}
+.details > * + * {
+  margin-top: 0.6rem;
+}
+.notes {
+  display: grid;
+  gap: 0.35rem;
+  padding-left: 1.1rem;
+  list-style: disc;
+}
+.hint {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+.chapters {
+  display: grid;
+  gap: 0.3rem;
+}
+.chapters li {
+  display: grid;
+  grid-template-columns: 6rem minmax(0, 1fr);
+  gap: 0.5rem;
+}
+.chNumber {
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+.chapters a {
+  color: var(--blazer);
+}
+.ja {
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+}
+
+/* ---------- Navigasi season ---------- */
+.seasonNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1.5rem;
+  max-width: 62rem;
+}
+.seasonNav a {
+  min-width: 2.4rem;
+  padding: 0.25rem 0.6rem;
+  text-align: center;
+  font-weight: 650;
+  font-size: 0.9rem;
+  text-decoration: none;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+.seasonNav a:hover {
+  border-color: var(--blazer);
+}
+.seasonNav a[aria-current='page'] {
+  color: #fff;
+  background: #1a368a;
+  border-color: #1a368a;
+}
+
+/* ---------- Sebelumnya / berikutnya ---------- */
+.pager {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  max-width: 62rem;
+  margin-top: 1.5rem;
+}
+.pager a {
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.75rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  text-decoration: none;
+  font-weight: 650;
+}
+.pager a:hover {
+  border-color: var(--blazer);
+}
+.pager span {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+.pagerNext {
+  grid-column: 2;
+  text-align: right;
+}
+
+@media (max-width: 560px) {
+  .row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem;
+  }
+  .number {
+    grid-auto-flow: column;
+    justify-content: start;
+    align-items: baseline;
+    gap: 0.6rem;
+    font-size: 1.8rem;
+  }
+  .chapters li {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+}

@@ -1,26 +1,127 @@
-@import "tailwindcss";
-
+/* Token desain. Biru = blazer Conan, merah = dasi kupu-kupu (hanya untuk penanda "hari ini"). */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  color-scheme: light dark;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --paper: #eff3f9;
+  --surface: #ffffff;
+  --ink: #101b33;
+  --ink-soft: #4b5878;
+  --blazer: #25479a;
+  --bow: #c81e2e;
+  --rule: #d3dbe8;
+
+  --radius: 4px;
+  --shell: 1200px;
+  --gutter: 1rem;
+
+  --font-text: 'Archivo Variable', system-ui, 'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic', sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --paper: #0b1224;
+    --surface: #121c36;
+    --ink: #e9eef9;
+    --ink-soft: #9daac8;
+    --blazer: #8baaf5;
+    --bow: #ff6674;
+    --rule: #25314f;
   }
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-text);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+dl,
+figure {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+:focus-visible {
+  outline: 3px solid var(--blazer);
+  outline-offset: 3px;
+}
+
+/* Judul bergaya kartu judul episode: sempit dan tebal */
+.display {
+  font-stretch: 72%;
+  font-weight: 800;
+  line-height: 0.96;
+  letter-spacing: -0.005em;
+}
+
+.shell {
+  width: min(var(--shell), 100% - var(--gutter) * 2);
+  margin-inline: auto;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Isi HTML dari wiki (berita, rilis, fakta) */
+.richtext a {
+  color: var(--blazer);
+}
+.richtext b,
+.richtext strong {
+  font-weight: 650;
+}
+.richtext font {
+  font-size: 0.85em;
+  color: var(--ink-soft);
+}
+
+@media (min-width: 720px) {
+  :root {
+    --gutter: 1.5rem;
+  }
 }

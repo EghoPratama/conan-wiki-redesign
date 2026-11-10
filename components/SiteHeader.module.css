@@ -1,0 +1,117 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+}
+
+.bar {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.6rem 1.5rem;
+  padding-block: 0.75rem;
+}
+
+.wordmark {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.28em;
+  font-size: 1.7rem;
+  text-decoration: none;
+}
+
+.detective {
+  color: var(--ink);
+}
+
+.conan {
+  color: var(--blazer);
+  font-weight: 400;
+}
+
+.search {
+  display: flex;
+  justify-self: end;
+  width: min(100%, 26rem);
+}
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.55rem 0.8rem;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-right: 0;
+  border-radius: var(--radius) 0 0 var(--radius);
+}
+
+.search input::placeholder {
+  color: var(--ink-soft);
+}
+
+.search button {
+  padding: 0 1rem;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 650;
+  color: #fff;
+  background: var(--blazer);
+  border: 1px solid var(--blazer);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  cursor: pointer;
+}
+
+@media (prefers-color-scheme: dark) {
+  .search button {
+    color: #0b1224;
+  }
+}
+
+.nav {
+  grid-column: 1 / -1;
+  min-width: 0; /* tanpa ini <ul> yang lebar memaksa seluruh grid melebihi layar */
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.nav ul {
+  display: flex;
+  gap: 1.4rem;
+  white-space: nowrap;
+}
+
+.nav a {
+  display: inline-block;
+  padding-block: 0.2rem;
+  font-size: 0.95rem;
+  font-weight: 560;
+  text-decoration: none;
+  color: var(--ink-soft);
+}
+
+.nav a:hover {
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+@media (min-width: 960px) {
+  .bar {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+  .nav {
+    grid-column: auto;
+    grid-row: 1;
+    grid-column: 2;
+    justify-self: start;
+    margin-left: 1rem;
+  }
+  .search {
+    grid-column: 3;
+    grid-row: 1;
+  }
+}

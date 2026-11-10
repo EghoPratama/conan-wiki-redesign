@@ -1,0 +1,54 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  gap: 1rem;
+}
+.card {
+  display: grid;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+.photo {
+  display: block;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+}
+.card:hover .photo {
+  border-color: var(--blazer);
+}
+.name {
+  font-weight: 650;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+.card:hover .name {
+  color: var(--blazer);
+}
+.more {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+.more button {
+  padding: 0.7rem 1.4rem;
+  font: inherit;
+  font-weight: 650;
+  color: #fff;
+  background: var(--blazer);
+  border: 0;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+@media (prefers-color-scheme: dark) {
+  .more button {
+    color: #0b1224;
+  }
+}
+.more button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}

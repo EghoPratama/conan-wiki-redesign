@@ -1,0 +1,549 @@
+/* ------------------------------------------------------------------
+   Halaman utama.
+   Satu hal yang dibuat mencolok: band biru "blazer" dengan tiket
+   berperforasi untuk tayangan berikutnya. Sisanya sengaja tenang.
+------------------------------------------------------------------- */
+
+/* ---------- Panggung (band biru di bawah header) ---------- */
+.stage {
+  --stage: #1a368a;
+  --stage-text: #ffffff;
+  --stage-soft: #c3d0f7;
+  --today: #c81e2e;
+
+  background: var(--stage);
+  color: var(--stage-text);
+}
+
+.stage :focus-visible {
+  outline-color: #ffd400; /* kuning garis polisi: terlihat di atas biru */
+}
+
+.stageInner {
+  display: grid;
+  gap: clamp(2rem, 5vw, 3.5rem);
+  padding-block: clamp(1.75rem, 5vw, 3.5rem) clamp(2.25rem, 6vw, 4rem);
+}
+
+.hero {
+  display: grid;
+  gap: 1.5rem clamp(1.5rem, 4vw, 3rem);
+  align-items: center;
+}
+
+.heroImage {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: #0f2160;
+}
+
+.heroText {
+  display: grid;
+  gap: 0.9rem;
+  justify-items: start;
+}
+
+.heroLabel {
+  font-weight: 650;
+  color: var(--stage-soft);
+}
+
+.heroTitle {
+  font-size: clamp(2.8rem, 7.2vw, 5.6rem);
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.heroAside {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--stage-soft);
+}
+
+.heroButton {
+  display: inline-block;
+  margin-top: 0.6rem;
+  padding: 0.7rem 1.2rem;
+  font-weight: 650;
+  color: var(--stage);
+  text-decoration: none;
+  background: #fff;
+  border-radius: var(--radius);
+}
+
+.heroButton:hover {
+  background: #e4ebff;
+}
+
+@media (min-width: 880px) {
+  .hero {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  }
+}
+
+/* ---------- Tiket "Coming up" ---------- */
+.ticketsTitle {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.ticketList {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+}
+
+.ticket {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  color: #101b33;
+  background: #f4f7fd;
+  border-radius: var(--radius);
+  animation: print 520ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 90ms);
+}
+
+.ticketMain {
+  display: grid;
+  gap: 0.15rem;
+  align-content: center;
+  padding: 0.9rem 1.1rem;
+}
+
+.ticketSeries {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4b5878;
+}
+
+.ticketLabel {
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.ticketTitle {
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
+/* Sobekan tiket: garis putus-putus + dua takik yang "menggigit" tepi tiket */
+.ticketStub {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-width: 6.5rem;
+  max-width: 9.5rem;
+  padding: 0.9rem 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
+  border-left: 2px dashed #9aa9d1;
+}
+
+.ticketStub::before,
+.ticketStub::after {
+  content: '';
+  position: absolute;
+  left: -9px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--stage);
+}
+
+.ticketStub::before {
+  top: -8px;
+}
+
+.ticketStub::after {
+  bottom: -8px;
+}
+
+.ticketStubToday {
+  color: #fff;
+  background: var(--today);
+  border-left-color: #fff;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+@keyframes print {
+  from {
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(-6px);
+  }
+  to {
+    clip-path: inset(-12px);
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticket {
+    animation: none;
+  }
+}
+
+/* ---------- Isi halaman ---------- */
+.page {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr); /* anak yang lebar (rak geser) tidak boleh melebarkan halaman */
+  gap: clamp(3rem, 7vw, 5rem);
+  padding-top: clamp(2.5rem, 6vw, 4rem);
+}
+
+.sectionTitle {
+  margin-bottom: 1rem;
+  font-size: clamp(1.7rem, 3.2vw, 2.3rem);
+}
+
+.columns {
+  display: grid;
+  gap: clamp(2.5rem, 6vw, 4rem);
+  align-items: start;
+}
+
+.aside {
+  display: grid;
+  gap: clamp(2.5rem, 6vw, 3.5rem);
+}
+
+@media (min-width: 960px) {
+  .columns {
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem);
+    gap: 4rem;
+  }
+}
+
+/* ---------- Rak "Also out now" ---------- */
+/* Layar kecil: satu baris yang bisa digeser; layar lebar: membungkus ke bawah */
+.shelf {
+  --cover-w: min(15rem, 72vw);
+
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  margin-inline: calc(var(--gutter) * -1);
+  padding: 0.25rem var(--gutter) 0.75rem;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: var(--gutter);
+  scrollbar-width: thin;
+}
+
+.shelf > li {
+  flex: none;
+  scroll-snap-align: start;
+}
+
+@media (min-width: 720px) {
+  .shelf {
+    flex-wrap: wrap;
+    gap: 1.75rem 1.5rem;
+    margin-inline: 0;
+    padding: 0;
+    overflow: visible;
+  }
+}
+
+.shelfItem {
+  display: grid;
+  gap: 0.1rem;
+  text-decoration: none;
+}
+
+.cover {
+  display: block;
+  margin-bottom: 0.55rem;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: #1c3270;
+}
+
+.coverWide {
+  width: var(--cover-w);
+  aspect-ratio: 16 / 9;
+}
+
+/* setinggi sampul lebar (16:9), lebarnya mengikuti rasio 2:3, supaya baris label sejajar */
+.coverTall {
+  width: calc(var(--cover-w) * 0.375);
+  height: calc(var(--cover-w) * 0.5625);
+}
+
+.shelfSeries {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.shelfLabel {
+  font-weight: 700;
+}
+
+.shelfTitle {
+  max-width: 15rem;
+  font-size: 0.95rem;
+  line-height: 1.35;
+  color: var(--ink-soft);
+}
+
+a.shelfItem:hover .shelfLabel {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* ---------- Berita ---------- */
+.newsGroups {
+  display: grid;
+}
+
+.newsGroup {
+  border-top: 1px solid var(--rule);
+}
+
+.newsGroup:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+
+.newsSummary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 0.9rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.newsSummary::-webkit-details-marker {
+  display: none;
+}
+
+.newsName {
+  font-size: 1.35rem;
+}
+
+.newsCount {
+  position: relative;
+  min-width: 2.6rem;
+  padding: 0.1rem 1.6rem 0.1rem 0.6rem;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+
+/* Panah buka/tutup: berputar saat <details> dibuka */
+.newsCount::after {
+  content: '';
+  position: absolute;
+  right: 0.35rem;
+  top: 50%;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-right: 2px solid var(--ink-soft);
+  border-bottom: 2px solid var(--ink-soft);
+  transform: translateY(-70%) rotate(45deg);
+  transition: transform 160ms ease;
+}
+
+.newsGroup[open] .newsCount::after {
+  transform: translateY(-30%) rotate(-135deg);
+}
+
+.newsList {
+  display: grid;
+  padding-bottom: 0.6rem;
+}
+
+.newsItem {
+  padding-block: 0.75rem;
+  border-top: 1px solid var(--rule);
+}
+
+.newsItem > :global(.richtext) {
+  display: block;
+  max-width: 68ch;
+}
+
+.newsItem :global(.news-new) {
+  display: inline-block;
+  margin-right: 0.5rem;
+  padding: 0 0.45rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  background: #c81e2e;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .newsCount::after {
+    transition: none;
+  }
+}
+
+/* ---------- Jadwal rilis ---------- */
+.relRegion + .relRegion {
+  margin-top: 1.75rem;
+}
+
+.relRegionName {
+  margin-bottom: 0.5rem;
+  font-size: 1.35rem;
+  color: var(--blazer);
+}
+
+.relCategory {
+  padding-block: 0.6rem;
+  border-top: 1px solid var(--rule);
+}
+
+.relCategoryName {
+  margin: 0 0 0.3rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.relList {
+  display: grid;
+  gap: 0.45rem;
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.relDate {
+  font-weight: 650;
+  color: var(--ink-soft);
+}
+
+.relSubList {
+  display: grid;
+  gap: 0.2rem;
+  margin-top: 0.15rem;
+  padding-left: 0.9rem;
+  border-left: 2px solid var(--rule);
+}
+
+/* ---------- Did you know ---------- */
+.dyk {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.dykItem {
+  font-size: 0.97rem;
+  line-height: 1.5;
+}
+
+.dykItem::before {
+  content: '\2026\00a0';
+  font-weight: 700;
+  color: var(--blazer);
+}
+
+/* ---------- Article of the month ---------- */
+.aotm {
+  display: grid;
+  gap: 1.5rem 2.5rem;
+  padding-top: clamp(2rem, 5vw, 3rem);
+  border-top: 1px solid var(--rule);
+}
+
+.aotmImage {
+  display: grid;
+  gap: 0.5rem;
+  align-content: start;
+}
+
+.aotmImage > :first-child {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: #1c3270;
+}
+
+.aotmCaption {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+
+.aotmBody {
+  display: -webkit-box;
+  max-width: 68ch;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 8;
+  line-clamp: 8;
+}
+
+.textLink {
+  font-weight: 650;
+  color: var(--blazer);
+}
+
+@media (min-width: 800px) {
+  .aotm {
+    grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+  }
+}
+
+/* ---------- Topik ---------- */
+.topics {
+  display: grid;
+  gap: clamp(2.5rem, 6vw, 3.5rem) 4rem;
+  padding-top: clamp(2rem, 5vw, 3rem);
+  border-top: 1px solid var(--rule);
+}
+
+.topicsHead {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.topicsHead .sectionTitle {
+  margin-bottom: 0;
+}
+
+.topicsImage {
+  display: block;
+  flex: none;
+  width: 3.6rem;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: #1c3270;
+}
+
+.topicList {
+  display: grid;
+  gap: 0.15rem 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+}
+
+.topicList > li {
+  display: grid;
+  gap: 0.05rem;
+  padding-block: 0.55rem;
+  border-top: 1px solid var(--rule);
+}
+
+.topicLink {
+  font-weight: 650;
+}
+
+.topicDesc {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--ink-soft);
+}
+
+@media (min-width: 1000px) {
+  .topics {
+    grid-template-columns: 3fr 2fr;
+  }
+}
