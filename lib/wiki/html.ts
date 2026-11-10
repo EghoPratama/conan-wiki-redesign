@@ -45,6 +45,13 @@ export function normalizeHtml(
   options: { linkBase: string }
 ): void {
   $root.find(REMOVE_SELECTOR).remove();
+  // komentar HTML (mis. "NewPP limit report" dari MediaWiki) tidak perlu dikirim ke klien
+  $root
+    .find('*')
+    .addBack()
+    .contents()
+    .filter((_, node) => node.type === 'comment')
+    .remove();
 
   // 1) spoiler & elemen tersembunyi -- harus SEBELUM style dibuang
   $root.find('[style]').each((_, el: any) => {

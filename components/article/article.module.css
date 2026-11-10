@@ -533,3 +533,28 @@
   width: 100%;
   border-radius: calc(var(--radius) / 2);
 }
+
+/* ---------- Gambar berketerangan (<figure>) ---------- */
+.body :global(figure) {
+  margin: 0 0 1rem;
+  text-align: center;
+}
+.body :global(figure) img {
+  margin: 0 auto 0.4rem;
+}
+.body :global(figure) figcaption {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+@media (min-width: 640px) {
+  /* gambar kecil mengapung di kanan, seperti di wiki asli */
+  .body :global(figure) {
+    float: right;
+    clear: right;
+    max-width: 14rem;
+    margin: 0.25rem 0 1rem 1.5rem;
+  }
+}
+.body :global(.mw-heading) {
+  clear: right;
+}

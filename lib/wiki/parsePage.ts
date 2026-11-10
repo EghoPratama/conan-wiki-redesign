@@ -169,6 +169,18 @@ export function parsePage(mwApiResponse: any): PageData {
   const cases = extractCases($);
   const gallery = extractGallery($, $infobox, imageUrl);
 
+  // Tanpa infobox, gambar utama diambil dari gambar pertama di artikel. Gambar itu sudah
+  // tampil di sidebar, jadi buang dari isi artikel supaya tidak ganda.
+  if (!$infobox.length && imageUrl) {
+    $('figure, span[typeof~="mw:File"]')
+      .filter((_, el) => {
+        const src = $(el).find('img').first().attr('src');
+        return !!src && toFullImage(absoluteUrl(src)) === imageUrl;
+      })
+      .first()
+      .remove();
+  }
+
   $infobox.remove();
   // kartu "People" juga ber-class infobox, tapi itu isi artikel -> jangan dibuang
   $('.infobox:not(.people), #toc, .toc, .navbox').remove();

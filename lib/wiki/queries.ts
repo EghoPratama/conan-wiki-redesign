@@ -9,6 +9,7 @@ import type {
 } from '@/types/character';
 import type { HomeData } from '@/types/home';
 import type { PageData } from '@/types/page';
+import type { DetectivesData } from '@/types/detectives';
 import type { MoviesData, MusicData, StaffData } from '@/types/extra';
 import type { AnimeIndex, MangaIndex, SeasonData, VolumeRangeData } from '@/types/lists';
 import { WikiError, wikiFetch } from './client';
@@ -16,6 +17,7 @@ import { decodeCursor, encodeCursor } from './cursor';
 import { fetchThumbnails } from './thumbnails';
 import { parseHome } from './parseHome';
 import { parsePage } from './parsePage';
+import { parseDetectives } from './parseDetectives';
 import { parseMovies, parseMusic, parseStaff } from './parseExtra';
 import { parseAnimeIndex, parseMangaIndex, parseSeason, parseVolumeRange } from './parseLists';
 import { clean, toWikiTitle } from './text';
@@ -202,6 +204,12 @@ async function loadGetStaff(): Promise<StaffData> {
   return parseStaff(await wikiFetch({ ...PARSE_PARAMS, page: 'Staff' }, { revalidate: LIST_REVALIDATE }));
 }
 
+async function loadGetDetectives(): Promise<DetectivesData> {
+  return parseDetectives(
+    await wikiFetch({ ...PARSE_PARAMS, page: 'Detective_Picture_Book' }, { revalidate: LIST_REVALIDATE })
+  );
+}
+
 // ===========================================================================
 // Lapisan cache ("use cache"). Ini yang dipanggil halaman & route handler.
 //
@@ -323,6 +331,13 @@ async function staffCached() {
   return attempt(loadGetStaff);
 }
 
+async function detectivesCached() {
+  'use cache';
+  cacheLife('days'); // bertambah ~1 entri per volume baru
+  return attempt(loadGetDetectives);
+}
+
+export const getDetectives = async (): Promise<DetectivesData> => unwrap(await detectivesCached());
 export const getMovies = async (): Promise<MoviesData> => unwrap(await moviesCached());
 export const getMusic = async (): Promise<MusicData> => unwrap(await musicCached());
 export const getStaff = async (): Promise<StaffData> => unwrap(await staffCached());

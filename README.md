@@ -21,6 +21,7 @@ Variabel lingkungan (opsional):
 |---|---|
 | `WIKI_API_URL` | Mengganti alamat `api.php`, berguna untuk tes dengan wiki tiruan |
 | `WIKI_DEBUG` | Mencetak log parser (infobox, thumbnail) |
+| `WIKIPEDIA_REST_URL` | Mengganti alamat REST API Wikipedia, hanya untuk tes dengan server tiruan |
 
 `next build` memanggil wiki saat prerender, jadi build butuh koneksi ke wiki.
 
@@ -34,6 +35,7 @@ Variabel lingkungan (opsional):
 | `/anime`, `/anime/[season]` | Season dan daftar episode |
 | `/manga`, `/manga/[range]` | Rentang volume dan chapter |
 | `/movies`, `/music`, `/staff` | Film, lagu, staf dan pengisi suara |
+| `/detectives`, `/detectives/[volume]` | Detective Picture Book: detektif favorit Aoyama per volume (cari, filter negara) dan detail tiap volume, juga untuk detektif yang tidak punya artikel wiki |
 | `/search?q=` | Pencarian |
 
 ## API
@@ -51,6 +53,7 @@ Error berbentuk `{ "error": "..." }` dengan status 400/404/502/504.
 | `/api/anime`, `/api/anime/[season]` | |
 | `/api/manga`, `/api/manga/[range]` | |
 | `/api/movies`, `/api/music`, `/api/staff` | |
+| `/api/detectives` | `{ total, entries[] }`: volume, detektif, pengarang, negara, rekomendasi, gambar |
 
 Detail lain ada di [WIKI-API.md](./WIKI-API.md).
 
@@ -58,7 +61,7 @@ Detail lain ada di [WIKI-API.md](./WIKI-API.md).
 
 ```
 app/          rute halaman dan /api/*; icon.svg = favicon
-components/   UI (article, home, lists, characters, search, extra)
+components/   UI (article, home, lists, characters, search, extra, detectives)
 lib/wiki/     client, query ber-cache, parser (html, infobox, page, lists, extra, home)
 types/        tipe data yang dikembalikan API
 ```
@@ -86,8 +89,12 @@ pintu ke wiki) -> `parse*.ts` (cheerio) -> tipe di `types/` -> halaman dan `/api
 - **Markup wiki berubah:** bila tampilan kosong, bandingkan HTML terbaru dengan asumsi di
   `lib/wiki/parse*.ts` (tiap parser berkomentar soal strukturnya).
 
+- **Ringkasan Wikipedia:** halaman `/detectives/[volume]` menampilkan ringkasan cerita rekomendasi dari
+  Wikipedia (`lib/wiki/wikipedia.ts`, di-cache seminggu). Kalau Wikipedia tidak punya ringkasan atau sedang
+  error, bagian itu disembunyikan. Tampilannya wajib menyertakan atribusi CC BY-SA 4.0.
+
 ## Lisensi dan atribusi
 
 Konten artikel dan gambar milik komunitas Detective Conan Wiki dan pemegang hak ciptanya.
 Detective Conan adalah karya Gosho Aoyama, diterbitkan oleh Shogakukan. Proyek ini tidak berafiliasi
-dengan pihak mana pun dan menautkan balik ke wiki sumber.
+dengan pihak mana pun dan menautkan balik ke wiki sumber. Ringkasan cerita berasal dari Wikipedia (CC BY-SA 4.0).

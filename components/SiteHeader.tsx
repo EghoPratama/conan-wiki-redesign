@@ -8,6 +8,7 @@ const NAV = [
   { href: '/movies', label: 'Movies' },
   { href: '/music', label: 'Music' },
   { href: '/staff', label: 'Staff' },
+  { href: '/detectives', label: 'Detectives' },
 ];
 
 export function SiteHeader() {

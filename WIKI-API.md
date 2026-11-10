@@ -14,6 +14,7 @@ pintu ke wiki adalah `lib/wiki/client.ts` (`wikiFetch`); semua query ada di
 | `/anime`, `/anime/[season]` | Daftar season dan episode |
 | `/manga`, `/manga/[range]` | Rentang volume (mis. `101-110`) dan chapter |
 | `/movies`, `/music`, `/staff` | Film, lagu, staf & pengisi suara |
+| `/detectives` | Detective Picture Book: detektif favorit Aoyama per volume (cari, filter negara) |
 | `/search?q=` | Pencarian |
 
 ## API (semua GET, JSON)
@@ -28,6 +29,7 @@ pintu ke wiki adalah `lib/wiki/client.ts` (`wikiFetch`); semua query ada di
 | `/api/anime`, `/api/anime/[season]` | |
 | `/api/manga`, `/api/manga/[range]` | |
 | `/api/movies`, `/api/music`, `/api/staff` | |
+| `/api/detectives` | `{ total, entries[] }`: volume, detektif, pengarang, negara, rekomendasi, gambar |
 
 Paginasi memakai `nextCursor` (opaque); kirim balik sebagai `?cursor=`.
 Error: `{ "error": "..." }` dengan status 400/404/502/504.
