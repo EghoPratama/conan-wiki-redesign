@@ -3,8 +3,9 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getDetectives } from '@/lib/wiki/queries';
 import { detectiveHref } from '@/lib/detectiveHref';
-import { getWikipediaSummary } from '@/lib/wiki/wikipedia';
+import { getCharacterSummary, getWikipediaSummary } from '@/lib/wiki/wikipedia';
 import type { Detective, Origin } from '@/types/detectives';
+import type { WikipediaSummary } from '@/lib/wiki/wikipedia';
 import { PageHeader } from '@/components/lists/PageHeader';
 import { Pager } from '@/components/lists/Pager';
 import { WikiImage } from '@/components/WikiImage';
@@ -52,13 +53,10 @@ function Related({ title, items }: { title: string; items: Detective[] }) {
   );
 }
 
-/** Ringkasan cerita rekomendasi dari Wikipedia; dimuat terpisah supaya halaman tidak menunggunya */
-async function StorySummary({ url, title }: { url: string | null; title: string }) {
-  const summary = await getWikipediaSummary(url);
-  if (!summary) return null;
+function WikipediaCard({ id, heading, summary }: { id: string; heading: string; summary: WikipediaSummary }) {
   return (
-    <section className={styles.story} aria-labelledby="story-heading">
-      <h2 id="story-heading">About &ldquo;{title}&rdquo;</h2>
+    <section className={styles.story} aria-labelledby={id}>
+      <h2 id={id}>{heading}</h2>
       {summary.description && <p className={styles.storyDesc}>{summary.description}</p>}
       <p lang={summary.lang}>{summary.extract}</p>
       <p className={styles.attribution}>
@@ -70,6 +68,20 @@ async function StorySummary({ url, title }: { url: string | null; title: string 
       </p>
     </section>
   );
+}
+
+/** Ringkasan tokoh dari Wikipedia; dimuat terpisah supaya halaman tidak menunggunya */
+async function CharacterSummary({ name, creator }: { name: string; creator: string }) {
+  const summary = await getCharacterSummary(name, creator);
+  if (!summary) return null;
+  return <WikipediaCard id="character-heading" heading={`About ${name}`} summary={summary} />;
+}
+
+/** Ringkasan cerita rekomendasi dari Wikipedia */
+async function StorySummary({ url, title }: { url: string | null; title: string }) {
+  const summary = await getWikipediaSummary(url);
+  if (!summary) return null;
+  return <WikipediaCard id="story-heading" heading={`About \u201c${title}\u201d`} summary={summary} />;
 }
 
 async function DetectiveContent({ params }: { params: Promise<{ volume: string }> }) {
@@ -156,6 +168,9 @@ async function DetectiveContent({ params }: { params: Promise<{ volume: string }
           </dl>
         </div>
 
+        <Suspense fallback={null}>
+          <CharacterSummary name={d.name} creator={d.creator} />
+        </Suspense>
         {rec.url && (
           <Suspense fallback={null}>
             <StorySummary url={rec.url} title={rec.title} />

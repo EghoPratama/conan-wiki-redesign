@@ -90,7 +90,7 @@ pintu ke wiki) -> `parse*.ts` (cheerio) -> tipe di `types/` -> halaman dan `/api
   `lib/wiki/parse*.ts` (tiap parser berkomentar soal strukturnya).
 
 - **Ringkasan Wikipedia:** halaman `/detectives/[volume]` menampilkan ringkasan cerita rekomendasi dari
-  Wikipedia (`lib/wiki/wikipedia.ts`, di-cache seminggu). Kalau Wikipedia tidak punya ringkasan atau sedang
+  Wikipedia, plus ringkasan tokoh detektifnya (dicari lewat nama lalu diverifikasi; `lib/wiki/wikipedia.ts`, di-cache seminggu). Kalau Wikipedia tidak punya ringkasan atau sedang
   error, bagian itu disembunyikan. Tampilannya wajib menyertakan atribusi CC BY-SA 4.0.
 
 ## Lisensi dan atribusi

@@ -547,13 +547,30 @@
   color: var(--ink-soft);
 }
 @media (min-width: 640px) {
-  /* gambar kecil mengapung di kanan, seperti di wiki asli */
-  .body :global(figure) {
+  /* hanya gambar yang berdiri sendiri di isi artikel yang mengapung di kanan (seperti di wiki asli);
+     gambar di dalam daftar/galeri tidak boleh, kalau tidak <li>-nya kosong */
+  .body > :global(figure) {
     float: right;
     clear: right;
     max-width: 14rem;
     margin: 0.25rem 0 1rem 1.5rem;
   }
+}
+/* Daftar berisi gambar (galeri, mis. "Cover in other countries") -> grid kartu tanpa bullet */
+.body ul:has(li figure) {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 9rem), 1fr));
+  gap: 1rem;
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+}
+.body ul:has(li figure) li {
+  margin: 0;
+  min-width: 0;
+}
+.body ul:has(li figure) figure {
+  margin: 0;
 }
 .body :global(.mw-heading) {
   clear: right;

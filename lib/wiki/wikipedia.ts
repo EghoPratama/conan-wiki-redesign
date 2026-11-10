@@ -93,6 +93,78 @@ async function fetchSummary(lang: string, title: string): Promise<WikipediaSumma
   };
 }
 
+// ---------------------------------------------------------------------------
+// Ringkasan TOKOH (bukan karya). Wiki Conan tidak menautkan tokoh ke Wikipedia (tautan di tabel
+// hanya bendera negara), jadi artikelnya dicari lewat nama lalu diverifikasi.
+// ---------------------------------------------------------------------------
+
+/** Huruf kecil tanpa aksen/makron: "Arsène" -> "arsene", "Ōgon" -> "ogon" */
+const fold = (text: string): string =>
+  text
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+
+/** Kata terakhir nama, tanpa titik: "V. I. Warshawski" -> "warshawski" */
+const lastToken = (name: string): string =>
+  fold(name).replace(/\(.*?\)/g, '').split(/[\s.]+/).filter((t) => t.length > 1).pop() ?? '';
+
+const CHARACTER_WORDS = /\b(fictional|character|detective|inspector|sleuth|investigator|protagonist|private eye|police|lawyer|attorney|physician|doctor)\b/;
+
+/** Ringkasan itu memang tentang tokoh yang dimaksud, bukan artikel lain bernama mirip? */
+function describesCharacter(summary: WikipediaSummary, name: string, creator: string): boolean {
+  const text = fold(`${summary.title} ${summary.description ?? ''} ${summary.extract}`);
+  const nameOk = text.includes(lastToken(name)) && lastToken(name).length > 2;
+  if (!nameOk) return false;
+  const creatorOk = creator
+    .split(/,| and /)
+    .map(lastToken)
+    .some((t) => t.length > 2 && text.includes(t));
+  return creatorOk || CHARACTER_WORDS.test(text);
+}
+
+async function searchTitles(lang: string, query: string): Promise<string[]> {
+  'use cache';
+  cacheLife('weeks');
+
+  const base = process.env.WIKIPEDIA_REST_URL
+    ? `${process.env.WIKIPEDIA_REST_URL.replace(/\/$/, '')}/${lang}/search/page`
+    : `https://${lang}.wikipedia.org/w/rest.php/v1/search/page`;
+  const res = await fetch(`${base}?q=${encodeURIComponent(query)}&limit=4`, {
+    headers: { 'User-Agent': USER_AGENT, Accept: 'application/json' },
+    signal: AbortSignal.timeout(TIMEOUT_MS),
+  });
+  if (res.status >= 400 && res.status < 500) return [];
+  if (!res.ok) throw new Error(`Wikipedia search ${res.status}`);
+  const json = (await res.json()) as { pages?: { key?: string }[] };
+  return (json.pages ?? []).map((p) => p.key).filter((k): k is string => !!k);
+}
+
+async function resolveCharacter(name: string, creator: string): Promise<WikipediaSummary | null> {
+  'use cache';
+  cacheLife('weeks');
+
+  // 1) judul persis = nama tokoh; 2) pencarian "<nama> <pengarang>" dan "<nama> fictional detective"
+  const candidates = [name.replace(/ /g, '_')];
+  for (const q of [`${name} ${creator}`, `${name} fictional detective`]) {
+    for (const key of await searchTitles('en', q)) if (!candidates.includes(key)) candidates.push(key);
+  }
+  for (const title of candidates.slice(0, 6)) {
+    const summary = await fetchSummary('en', title);
+    if (summary && describesCharacter(summary, name, creator)) return summary;
+  }
+  return null;
+}
+
+/** Ringkasan Wikipedia tentang tokoh detektifnya; null bila tidak ketemu yang meyakinkan. */
+export async function getCharacterSummary(name: string, creator: string): Promise<WikipediaSummary | null> {
+  try {
+    return await resolveCharacter(name, creator);
+  } catch {
+    return null;
+  }
+}
+
 /** Ringkasan untuk URL Wikipedia; tidak pernah melempar (halaman tetap tampil tanpa ringkasan). */
 export async function getWikipediaSummary(url: string | null): Promise<WikipediaSummary | null> {
   const ref = url ? parseWikipediaUrl(url) : null;
