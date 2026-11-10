@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { WikiError } from '@/lib/wiki/client';
 import { getPage } from '@/lib/wiki/queries';
@@ -10,7 +11,29 @@ import { SideGallery } from '@/components/article/SideGallery';
 import { Toc } from '@/components/article/Toc';
 import { WikiImage } from '@/components/WikiImage';
 import { decodeParam } from '@/components/article/labels';
+import { pageMeta } from '@/lib/seo';
 import styles from '@/components/article/article.module.css';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  try {
+    const page = await getPage(decodeParam(slug));
+    return pageMeta({
+      title: page.title,
+      description: page.description ?? `${page.title} on the Detective Conan Wiki.`,
+      path: `/wiki/${slug}`,
+      image: page.imageUrl,
+      type: 'article',
+    });
+  } catch {
+    // tidak ada / wiki error: isi halaman yang menampilkan "Case not found" atau error-nya
+    return { title: 'Case not found', robots: { index: false } };
+  }
+}
 
 // Halaman statis (shell) + isi yang dimuat di dalam <Suspense>:
 // aman dengan `cacheComponents: true` maupun tanpa.
@@ -35,9 +58,6 @@ async function WikiPageContent({ params }: { params: Promise<{ slug: string }> }
 
   return (
     <article>
-      {/* React 19 memindahkan <title> ke <head> */}
-      <title>{page.title}</title>
-
       <header className={styles.hero}>
         <div className={`shell ${styles.heroInner}`}>
           {page.heading && <p className={styles.kicker}>{page.heading}</p>}

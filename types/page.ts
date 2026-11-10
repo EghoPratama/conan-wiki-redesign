@@ -39,6 +39,8 @@ export interface PageData {
   /** Navigasi episode/chapter/volume sebelum & sesudah (+ link daftar, mis. "List of Chapters"); null kalau tidak ada */
   chronology: { previous: PageLink | null; next: PageLink | null; lists: PageLink[] } | null;
   sections: PageSection[];
+  /** Kalimat pembuka artikel (maks. ~160 karakter), untuk meta description; tanpa teks spoiler */
+  description: string | null;
   /** Gambar tambahan dari infobox (selain gambar utama), mis. sampul volume: detektif & keyhole */
   gallery: GallerySection[];
   /** Kasus yang dimuat di halaman ini (kosong kalau tidak ada). HTML-nya tetap ada di `html` */

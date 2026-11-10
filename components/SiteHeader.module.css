@@ -31,10 +31,37 @@
   font-weight: 400;
 }
 
+.tools {
+  /* mobile: form pencarian turun ke baris sendiri (lebar penuh), tombol tema di kanan wordmark */
+  display: contents;
+}
+
 .search {
   display: flex;
+  grid-column: 1 / -1;
+  grid-row: 2;
+  min-width: 0;
+}
+
+.theme {
+  display: grid;
+  place-items: center;
+  grid-column: 2;
+  grid-row: 1;
   justify-self: end;
-  width: min(100%, 26rem);
+  flex: none;
+  width: 2.4rem;
+  height: 2.4rem;
+  color: var(--ink-soft);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.theme:hover {
+  color: var(--ink);
+  border-color: var(--blazer);
 }
 
 .search input {
@@ -59,18 +86,13 @@
   font: inherit;
   font-size: 0.95rem;
   font-weight: 650;
-  color: #fff;
+  color: var(--on-blazer);
   background: var(--blazer);
   border: 1px solid var(--blazer);
   border-radius: 0 var(--radius) var(--radius) 0;
   cursor: pointer;
 }
 
-@media (prefers-color-scheme: dark) {
-  .search button {
-    color: #0b1224;
-  }
-}
 
 .nav {
   grid-column: 1 / -1;
@@ -110,8 +132,23 @@
     justify-self: start;
     margin-left: 1rem;
   }
-  .search {
+  .tools {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     grid-column: 3;
     grid-row: 1;
+    justify-self: end;
+    width: min(100%, 29rem);
+  }
+  .search {
+    flex: 1;
+    grid-column: auto;
+    grid-row: auto;
+  }
+  .theme {
+    grid-column: auto;
+    grid-row: auto;
+    justify-self: auto;
   }
 }

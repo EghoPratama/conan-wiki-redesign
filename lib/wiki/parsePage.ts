@@ -4,7 +4,7 @@ import type { Cheerio, CheerioAPI } from 'cheerio';
 import type { CaseInfo, GallerySection, PageData, PageLink, PageSection } from '@/types/page';
 import { normalizeHtml, slugFromHref } from './html';
 import { parseInfobox } from './infobox';
-import { absoluteUrl, clean, toFullImage } from './text';
+import { absoluteUrl, clean, toFullImage, truncate } from './text';
 
 const LINK_BASE = '/wiki';
 
@@ -127,6 +127,18 @@ function extractGallery($: CheerioAPI, $infobox: Cheerio<any>, mainImage: string
   return sections;
 }
 
+/** Paragraf pembuka yang cukup panjang, tanpa footnote dan tanpa teks spoiler (sudah di-hidden oleh normalizeHtml) */
+function extractDescription($: CheerioAPI): string | null {
+  for (const p of $('body p').toArray()) {
+    if ($(p).closest('[hidden], [data-spoiler]').length) continue;
+    const $p = $(p).clone();
+    $p.find('sup, style, script, [hidden], [data-spoiler], .Template-code').remove();
+    const text = clean($p.text()).replace(/\[\d+\]/g, '');
+    if (text.length >= 60) return truncate(text);
+  }
+  return null;
+}
+
 function camelKey(label: string): string {
   const words = label.replace(/:$/, '').toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
   return words.map((w, i) => (i ? w[0].toUpperCase() + w.slice(1) : w)).join('');
@@ -196,6 +208,7 @@ export function parsePage(mwApiResponse: any): PageData {
     sections,
     cases,
     gallery,
+    description: extractDescription($),
     html: $('body').html() || '',
   };
 }

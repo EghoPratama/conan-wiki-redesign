@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { WikiError } from '@/lib/wiki/client';
 import { getSeason } from '@/lib/wiki/queries';
@@ -6,6 +7,26 @@ import { EpisodeList } from '@/components/lists/EpisodeList';
 import { PageHeader } from '@/components/lists/PageHeader';
 import { Pager } from '@/components/lists/Pager';
 import { SeasonNav } from '@/components/lists/SeasonNav';
+import { pageMeta } from '@/lib/seo';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ season: string }>;
+}): Promise<Metadata> {
+  const { season: raw } = await params;
+  const number = /^\d{1,3}$/.test(raw) ? Number(raw) : NaN;
+  try {
+    const data = await getSeason(number);
+    return pageMeta({
+      title: data.title,
+      description: `All ${data.episodes.length} episodes of Detective Conan ${data.title} (anime), with air dates.`,
+      path: `/anime/${raw}`,
+    });
+  } catch {
+    return { title: 'Season not found', robots: { index: false } };
+  }
+}
 
 export default function SeasonPage({ params }: { params: Promise<{ season: string }> }) {
   return (
@@ -37,7 +58,6 @@ async function SeasonContent({ params }: { params: Promise<{ season: string }> }
 
   return (
     <>
-      <title>{data.title}</title>
       <PageHeader kicker="Anime" title={data.title}>
         {episodes.length > 0 && (
           <p style={{ color: '#c3d0f7' }}>

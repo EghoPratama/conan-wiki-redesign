@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import type { Metadata } from 'next';
 import { WikiError } from '@/lib/wiki/client';
 import {
   SEARCH_MAX_QUERY,
@@ -10,12 +11,14 @@ import { SearchResults } from '@/components/search/SearchResults';
 import articleStyles from '@/components/article/article.module.css';
 import styles from '@/components/search/search.module.css';
 
+// halaman hasil pencarian tidak perlu masuk indeks mesin pencari
+export const metadata: Metadata = { title: 'Search', robots: { index: false, follow: true } };
+
 type SearchParams = Promise<{ q?: string | string[] }>;
 
 export default function SearchPage({ searchParams }: { searchParams: SearchParams }) {
   return (
     <>
-      <title>Search</title>
       <Suspense fallback={<Header text="Searching…" />}>
         <Content searchParams={searchParams} />
       </Suspense>

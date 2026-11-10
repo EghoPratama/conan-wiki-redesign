@@ -1,13 +1,19 @@
 import { Suspense } from 'react';
+import { pageMeta } from '@/lib/seo';
 import { getDetectives } from '@/lib/wiki/queries';
 import { PageHeader } from '@/components/lists/PageHeader';
 import { DetectiveGallery } from '@/components/detectives/DetectiveGallery';
 import styles from '@/components/detectives/detectives.module.css';
 
+export const metadata = pageMeta({
+  title: 'Detective Picture Book',
+  description: "Gosho Aoyama's Detective Picture Book: the famous fictional detective featured on the dust-jacket of every Detective Conan volume, with Aoyama's story recommendation.",
+  path: '/detectives',
+});
+
 export default function DetectivesPage() {
   return (
     <>
-      <title>Detective Picture Book</title>
       <PageHeader kicker="Gosho Aoyama's" title="Detective Picture Book">
         <p className={styles.intro}>
           One famous fictional detective on the dust-jacket of every Detective Conan volume,

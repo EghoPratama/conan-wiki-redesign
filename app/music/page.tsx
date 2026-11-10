@@ -1,13 +1,19 @@
 import { Suspense } from 'react';
+import { pageMeta } from '@/lib/seo';
 import Link from 'next/link';
 import { getMusic } from '@/lib/wiki/queries';
 import { PageHeader } from '@/components/lists/PageHeader';
 import styles from '@/components/extra/extra.module.css';
 
+export const metadata = pageMeta({
+  title: 'Music',
+  description: 'Openings, endings and soundtracks of Detective Conan, listed by series.',
+  path: '/music',
+});
+
 export default function MusicPage() {
   return (
     <>
-      <title>Music</title>
       <PageHeader kicker="Detective Conan" title="Music" />
       <div className="shell" style={{ paddingBlock: 'clamp(1.5rem, 4vw, 3rem)' }}>
         <Suspense fallback={<p aria-busy="true">Loading music…</p>}>

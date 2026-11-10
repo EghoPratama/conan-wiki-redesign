@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import { pageMeta } from '@/lib/seo';
 import Link from 'next/link';
 import { getStaff } from '@/lib/wiki/queries';
 import { PageHeader } from '@/components/lists/PageHeader';
@@ -6,10 +7,15 @@ import { PersonText } from '@/components/extra/Person';
 import { WikiImage } from '@/components/WikiImage';
 import styles from '@/components/extra/extra.module.css';
 
+export const metadata = pageMeta({
+  title: 'Staff',
+  description: 'The manga staff, Japanese voice cast and main anime staff behind Detective Conan.',
+  path: '/staff',
+});
+
 export default function StaffPage() {
   return (
     <>
-      <title>Staff</title>
       <PageHeader kicker="Detective Conan" title="Staff" />
       <div className="shell" style={{ paddingBlock: 'clamp(1.5rem, 4vw, 3rem)' }}>
         <Suspense fallback={<p aria-busy="true">Loading staff…</p>}>

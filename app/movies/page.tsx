@@ -1,14 +1,20 @@
 import { Suspense } from 'react';
+import { pageMeta } from '@/lib/seo';
 import Link from 'next/link';
 import { getMovies } from '@/lib/wiki/queries';
 import { PageHeader } from '@/components/lists/PageHeader';
 import list from '@/components/lists/lists.module.css';
 import styles from '@/components/extra/extra.module.css';
 
+export const metadata = pageMeta({
+  title: 'Movies',
+  description: 'Every Detective Conan movie: release dates, runtimes, box office and the characters in each plot.',
+  path: '/movies',
+});
+
 export default function MoviesPage() {
   return (
     <>
-      <title>Movies</title>
       <PageHeader kicker="Detective Conan" title="Movies" />
       <div className="shell" style={{ paddingBlock: 'clamp(1.5rem, 4vw, 3rem)' }}>
         <Suspense fallback={<p aria-busy="true">Loading movies…</p>}>

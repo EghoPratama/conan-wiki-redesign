@@ -21,6 +21,7 @@ Variabel lingkungan (opsional):
 |---|---|
 | `WIKI_API_URL` | Mengganti alamat `api.php`, berguna untuk tes dengan wiki tiruan |
 | `WIKI_DEBUG` | Mencetak log parser (infobox, thumbnail) |
+| `NEXT_PUBLIC_SITE_URL` | Alamat situs untuk URL absolut di metadata (canonical, OpenGraph). Di Vercel otomatis memakai domain produksi; isi hanya kalau memakai domain sendiri |
 | `WIKIPEDIA_REST_URL` | Mengganti alamat REST API Wikipedia, hanya untuk tes dengan server tiruan |
 
 `next build` memanggil wiki saat prerender, jadi build butuh koneksi ke wiki.
@@ -92,6 +93,15 @@ pintu ke wiki) -> `parse*.ts` (cheerio) -> tipe di `types/` -> halaman dan `/api
 - **Ringkasan Wikipedia:** halaman `/detectives/[volume]` menampilkan ringkasan cerita rekomendasi dari
   Wikipedia, plus ringkasan tokoh detektifnya (dicari lewat nama lalu diverifikasi; `lib/wiki/wikipedia.ts`, di-cache seminggu). Kalau Wikipedia tidak punya ringkasan atau sedang
   error, bagian itu disembunyikan. Tampilannya wajib menyertakan atribusi CC BY-SA 4.0.
+
+- **Tema:** mengikuti sistem secara bawaan; tombol di header memilih Light, Dark, atau System dan disimpan
+  di `localStorage`. Warna ada di token `app/globals.css` (`data-theme` di `<html>`); skrip kecil di
+  `layout.tsx` memasangnya sebelum render supaya tidak berkedip. Pakai `--on-blazer` untuk teks di atas
+  latar `--blazer`, jangan `#fff`.
+- **Metadata:** tiap halaman punya judul, deskripsi, canonical, OpenGraph, dan Twitter card lewat
+  `lib/seo.ts` (`pageMeta`). Halaman dinamis memakai `generateMetadata`. Gambar pratinjau halaman diambil
+  dari gambar utama artikel, bawaannya `app/opengraph-image.png`. `/search` dan halaman "tidak ditemukan"
+  diberi `noindex`; `/api/*` dilarang di `robots.txt`.
 
 ## Lisensi dan atribusi
 

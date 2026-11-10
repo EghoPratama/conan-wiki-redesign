@@ -1,8 +1,10 @@
 import { Suspense } from 'react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getDetectives } from '@/lib/wiki/queries';
 import { detectiveHref } from '@/lib/detectiveHref';
+import { pageMeta } from '@/lib/seo';
 import { getCharacterSummary, getWikipediaSummary } from '@/lib/wiki/wikipedia';
 import type { Detective, Origin } from '@/types/detectives';
 import type { WikipediaSummary } from '@/lib/wiki/wikipedia';
@@ -12,6 +14,28 @@ import { WikiImage } from '@/components/WikiImage';
 import styles from '@/components/detectives/detectives.module.css';
 
 const href = (slug: string) => `/wiki/${encodeURIComponent(slug)}`;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ volume: string }>;
+}): Promise<Metadata> {
+  const { volume: raw } = await params;
+  const volume = /^\d{1,3}$/.test(raw) ? Number(raw) : NaN;
+  try {
+    const { entries } = await getDetectives();
+    const d = entries.find((e) => e.volume === volume);
+    if (!d) return { title: 'Detective not found', robots: { index: false } };
+    return pageMeta({
+      title: `${d.name} (Volume ${d.volume})`,
+      description: `${d.name}, created by ${d.creator}, is the featured detective of Detective Conan volume ${d.volume}. Aoyama recommends \u201c${d.recommendation.title}\u201d.`,
+      path: `/detectives/${d.volume}`,
+      image: d.imageUrl,
+    });
+  } catch {
+    return { title: 'Detective Picture Book' };
+  }
+}
 
 export default function DetectivePage({ params }: { params: Promise<{ volume: string }> }) {
   return (
@@ -106,7 +130,6 @@ async function DetectiveContent({ params }: { params: Promise<{ volume: string }
 
   return (
     <>
-      <title>{`${d.name} · Detective Picture Book`}</title>
       <PageHeader kicker={`Detective Picture Book · Volume ${d.volume}`} title={d.name}>
         {d.note && <p className={styles.intro}>{d.note}</p>}
       </PageHeader>

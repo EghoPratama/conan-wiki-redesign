@@ -24,3 +24,11 @@ export const toFullImage = (url: string): string =>
 /** "Conan Edogawa" -> "Conan_Edogawa" */
 export const toWikiTitle = (name: string): string =>
   name.trim().replace(/\s+/g, '_');
+
+/** Potong di batas kata dan beri elipsis */
+export function truncate(text: string, max = 160): string {
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max - 1);
+  return `${cut.slice(0, Math.max(cut.lastIndexOf(' '), max * 0.6))}…`;
+}
+

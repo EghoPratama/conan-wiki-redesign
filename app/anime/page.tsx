@@ -1,12 +1,18 @@
 import { Suspense } from 'react';
+import { pageMeta } from '@/lib/seo';
 import { getAnimeIndex } from '@/lib/wiki/queries';
 import { IndexGrid } from '@/components/lists/IndexGrid';
 import { PageHeader } from '@/components/lists/PageHeader';
 
+export const metadata = pageMeta({
+  title: 'Anime',
+  description: 'Every season and episode of the Detective Conan anime, with air dates and episode numbers.',
+  path: '/anime',
+});
+
 export default function AnimePage() {
   return (
     <>
-      <title>Anime</title>
       <PageHeader kicker="Detective Conan" title="Anime" />
       <div className="shell" style={{ paddingBlock: 'clamp(1.5rem, 4vw, 3rem)' }}>
         <Suspense fallback={<p aria-busy="true">Loading seasons…</p>}>

@@ -37,16 +37,11 @@
   padding: 0.7rem 1.4rem;
   font: inherit;
   font-weight: 650;
-  color: #fff;
+  color: var(--on-blazer);
   background: var(--blazer);
   border: 0;
   border-radius: var(--radius);
   cursor: pointer;
-}
-@media (prefers-color-scheme: dark) {
-  .more button {
-    color: #0b1224;
-  }
 }
 .more button:disabled {
   opacity: 0.6;

@@ -7,6 +7,7 @@
   --ink: #101b33;
   --ink-soft: #4b5878;
   --blazer: #25479a;
+  --on-blazer: #ffffff; /* teks di atas latar --blazer */
   --bow: #c81e2e;
   --rule: #d3dbe8;
 
@@ -17,16 +18,37 @@
   --font-text: 'Archivo Variable', system-ui, 'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic', sans-serif;
 }
 
+/*
+ * Tema: tanpa atribut data-theme = ikut sistem; data-theme="light" / "dark" = pilihan manual
+ * dari ThemeToggle (diset sebelum render oleh skrip kecil di layout.tsx, supaya tidak berkedip).
+ * Nilai gelap harus ditulis dua kali (CSS tidak punya mixin): di blok "ikut sistem" dan di blok manual.
+ */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --paper: #0b1224;
     --surface: #121c36;
     --ink: #e9eef9;
     --ink-soft: #9daac8;
     --blazer: #8baaf5;
+    --on-blazer: #0b1224;
     --bow: #ff6674;
     --rule: #25314f;
   }
+}
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --paper: #0b1224;
+  --surface: #121c36;
+  --ink: #e9eef9;
+  --ink-soft: #9daac8;
+  --blazer: #8baaf5;
+  --on-blazer: #0b1224;
+  --bow: #ff6674;
+  --rule: #25314f;
 }
 
 *,

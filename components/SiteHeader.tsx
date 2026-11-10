@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { ThemeToggle } from './ThemeToggle';
 import styles from './SiteHeader.module.css';
 
 const NAV = [
@@ -20,21 +21,24 @@ export function SiteHeader() {
           <span className={`display ${styles.conan}`}>conan</span>
         </Link>
 
-        <form className={styles.search} action="/search" role="search">
-          <label className="sr-only" htmlFor="site-search">
-            Search the wiki
-          </label>
-          <input
-            id="site-search"
-            name="q"
-            type="search"
-            minLength={2}
-            maxLength={100}
-            placeholder="Search the wiki"
-            autoComplete="off"
-          />
-          <button type="submit">Search</button>
-        </form>
+        <div className={styles.tools}>
+          <form className={styles.search} action="/search" role="search">
+            <label className="sr-only" htmlFor="site-search">
+              Search the wiki
+            </label>
+            <input
+              id="site-search"
+              name="q"
+              type="search"
+              minLength={2}
+              maxLength={100}
+              placeholder="Search the wiki"
+              autoComplete="off"
+            />
+            <button type="submit">Search</button>
+          </form>
+          <ThemeToggle />
+        </div>
 
         <nav className={styles.nav} aria-label="Main">
           <ul>

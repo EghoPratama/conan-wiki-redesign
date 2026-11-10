@@ -438,7 +438,7 @@
   border-radius: var(--radius);
 }
 .body table:global(.wikitable) th {
-  color: #fff;
+  color: var(--on-blazer);
   background: var(--blazer);
   border-color: var(--blazer);
   white-space: nowrap;
@@ -510,7 +510,7 @@
   font-size: 0.9rem;
   font-weight: 700;
   text-align: center;
-  color: #fff;
+  color: var(--on-blazer);
   background: var(--blazer);
 }
 .sideGalleryGrid {

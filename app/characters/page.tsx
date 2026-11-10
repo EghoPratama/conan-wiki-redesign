@@ -1,12 +1,18 @@
 import { Suspense } from 'react';
+import { pageMeta } from '@/lib/seo';
 import { CHARACTERS_PAGE_SIZE, getCharacterList } from '@/lib/wiki/queries';
 import { CharacterGrid } from '@/components/characters/CharacterGrid';
 import styles from '@/components/article/article.module.css';
 
+export const metadata = pageMeta({
+  title: 'Characters',
+  description: 'Browse every Detective Conan character, from the Detective Boys to the Black Organization.',
+  path: '/characters',
+});
+
 export default function CharactersPage() {
   return (
     <>
-      <title>Characters</title>
       <header className={styles.hero}>
         <div className={`shell ${styles.heroInner}`}>
           <p className={styles.kicker}>Detective Conan</p>

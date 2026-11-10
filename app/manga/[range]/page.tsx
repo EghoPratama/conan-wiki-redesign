@@ -1,10 +1,31 @@
 import { Suspense } from 'react';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { WikiError } from '@/lib/wiki/client';
 import { getMangaIndex, getVolumeRange } from '@/lib/wiki/queries';
 import { PageHeader } from '@/components/lists/PageHeader';
 import { Pager } from '@/components/lists/Pager';
 import { VolumeList } from '@/components/lists/VolumeList';
+import { pageMeta } from '@/lib/seo';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ range: string }>;
+}): Promise<Metadata> {
+  const { range } = await params;
+  try {
+    const data = await getVolumeRange(range);
+    const title = data.title.replace('-', '–');
+    return pageMeta({
+      title,
+      description: `Detective Conan manga ${title}: ${data.volumes.length} volumes with their chapters and release dates.`,
+      path: `/manga/${range}`,
+    });
+  } catch {
+    return { title: 'Volumes not found', robots: { index: false } };
+  }
+}
 
 export default function RangePage({ params }: { params: Promise<{ range: string }> }) {
   return (
@@ -37,7 +58,6 @@ async function RangeContent({ params }: { params: Promise<{ range: string }> }) 
 
   return (
     <>
-      <title>{data.title}</title>
       <PageHeader kicker="Manga" title={data.title.replace('-', '–')} />
       <div className="shell" style={{ paddingBlock: 'clamp(1.5rem, 4vw, 3rem)' }}>
         {data.volumes.length ? (
